@@ -42,5 +42,24 @@ public class ProdukController {
         return list;
     }
 
-    // Tambahkan create, update, delete jika sudah siap
+    public static boolean tambahProduk(ProdukModel produk) {
+        String sql = "INSERT INTO produk (kode_produk, nama_produk, jenis, merk, harga_beli, harga_jual, stok) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, produk.getKodeProduk());
+            stmt.setString(2, produk.getNamaProduk());
+            stmt.setString(3, produk.getJenis());
+            stmt.setString(4, produk.getMerk());
+            stmt.setDouble(5, produk.getHargaBeli());
+            stmt.setDouble(6, produk.getHargaJual());
+            stmt.setInt(7, produk.getStok());
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
