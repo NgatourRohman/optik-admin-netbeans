@@ -64,4 +64,55 @@ public class LaporanController {
         }
         return list;
     }
+
+    public static List<Map<String, Object>> getLaporanPembelian() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = """
+            SELECT pb.id, pb.tanggal, s.nama AS supplier, pb.total
+            FROM pembelian pb
+            JOIN supplier s ON pb.supplier_id = s.id
+            ORDER BY pb.id DESC
+        """;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("id", rs.getInt("id"));
+                row.put("tanggal", rs.getTimestamp("tanggal"));
+                row.put("supplier", rs.getString("supplier"));
+                row.put("total", rs.getDouble("total"));
+                list.add(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public static List<Map<String, Object>> getLaporanStokProduk() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = "SELECT kode_produk, nama_produk, jenis, merk, harga_beli, harga_jual, stok FROM produk ORDER BY nama_produk ASC";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("kode", rs.getString("kode_produk"));
+                row.put("nama", rs.getString("nama_produk"));
+                row.put("jenis", rs.getString("jenis"));
+                row.put("merk", rs.getString("merk"));
+                row.put("harga_beli", rs.getDouble("harga_beli"));
+                row.put("harga_jual", rs.getDouble("harga_jual"));
+                row.put("stok", rs.getInt("stok"));
+                list.add(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }
