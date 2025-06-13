@@ -62,4 +62,59 @@ public class ProdukController {
             return false;
         }
     }
+
+    public static ProdukModel getProdukById(int id) {
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = "SELECT * FROM produk WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new ProdukModel(
+                        rs.getInt("id"),
+                        rs.getString("kode_produk"),
+                        rs.getString("nama_produk"),
+                        rs.getString("jenis"),
+                        rs.getString("merk"),
+                        rs.getDouble("harga_beli"),
+                        rs.getDouble("harga_jual"),
+                        rs.getInt("stok")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static boolean hapusProduk(int id) {
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = "DELETE FROM produk WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateProduk(ProdukModel produk) {
+        String sql = "UPDATE produk SET kode_produk=?, nama_produk=?, jenis=?, merk=?, harga_beli=?, harga_jual=?, stok=? WHERE id=?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, produk.getKodeProduk());
+            stmt.setString(2, produk.getNamaProduk());
+            stmt.setString(3, produk.getJenis());
+            stmt.setString(4, produk.getMerk());
+            stmt.setDouble(5, produk.getHargaBeli());
+            stmt.setDouble(6, produk.getHargaJual());
+            stmt.setInt(7, produk.getStok());
+            stmt.setInt(8, produk.getId());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
