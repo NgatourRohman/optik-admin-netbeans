@@ -34,6 +34,7 @@ public class DashboardView extends JFrame {
         tabs.addTab("Penjualan", new PenjualanPanel());
         tabs.addTab("Supplier", new SupplierPanel());
         tabs.addTab("Pelanggan", new PelangganPanel());
+        tabs.addTab("Pembelian", new PembelianPanel());
 
         getContentPane().add(tabs);
 
