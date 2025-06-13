@@ -31,6 +31,7 @@ public class DashboardView extends JFrame {
         JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("Dashboard", panel);
         tabs.addTab("Produk", new ProdukPanel());
+        tabs.addTab("Penjualan", new PenjualanPanel());
 
         getContentPane().add(tabs);
 
