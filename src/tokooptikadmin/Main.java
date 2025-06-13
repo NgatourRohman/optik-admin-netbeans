@@ -8,13 +8,14 @@ package tokooptikadmin;
  *
  * @author ngato
  */
-public class Main {
+import javax.swing.SwingUtilities;
+import tokooptikadmin.views.DashboardView;
 
-    /**
-     * @param args the command line arguments
-     */
+public class Main {
     public static void main(String[] args) {
-        // TODO code application logic here
+        SwingUtilities.invokeLater(() -> {
+            DashboardView view = new DashboardView();
+            view.setVisible(true);
+        });
     }
-    
 }
