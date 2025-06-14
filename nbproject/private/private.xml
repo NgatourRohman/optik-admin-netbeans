@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/Main.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/DashboardView.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/models/DBConnection.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/models/ProdukModel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/controllers/ProdukController.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/ProdukPanel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/ButtonRenderer.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/ButtonEditor.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/controllers/PenjualanController.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/models/PenjualanModel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/models/KeranjangItem.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/PenjualanPanel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/models/SupplierModel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/controllers/SupplierController.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/SupplierPanel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/models/PelangganModel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/PelangganPanel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/controllers/PelangganController.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/controllers/PembelianController.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/PembelianPanel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/controllers/LaporanController.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/LaporanPenjualanPanel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/LaporanPembelianPanel.java</file>
+            <file>file:/D:/CodingProject/NetBeans/TokoOptikAdmin/src/tokooptikadmin/views/LaporanStokPanel.java</file>
+        </group>
+    </open-files>
+</project-private>

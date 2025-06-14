@@ -9,13 +9,13 @@ package tokooptikadmin;
  * @author ngato
  */
 import javax.swing.SwingUtilities;
-import tokooptikadmin.views.DashboardView;
+import tokooptikadmin.views.LoginView;
 
 public class Main {
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            DashboardView view = new DashboardView();
-            view.setVisible(true);
+            new LoginView().setVisible(true);
         });
     }
 }
