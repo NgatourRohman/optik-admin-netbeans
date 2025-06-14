@@ -8,13 +8,22 @@ package tokooptikadmin;
  *
  * @author ngato
  */
+import tokooptikadmin.utils.SessionStorage;
+import tokooptikadmin.utils.Session;
+import tokooptikadmin.models.AdminModel;
+import tokooptikadmin.views.*;
+
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            AdminModel remembered = SessionStorage.loadSession();
+            if (remembered != null) {
+                Session.setAdmin(remembered);
+                new DashboardView().setVisible(true);
+            } else {
+                new LoginView().setVisible(true);
+            }
+        });
     }
-    
 }
