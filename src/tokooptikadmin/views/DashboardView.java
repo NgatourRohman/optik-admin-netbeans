@@ -12,6 +12,7 @@ import tokooptikadmin.utils.Session;
 
 import javax.swing.*;
 import java.awt.*;
+import tokooptikadmin.utils.SessionStorage;
 
 public class DashboardView extends JFrame {
 
@@ -28,7 +29,7 @@ public class DashboardView extends JFrame {
 
         // ========== MENU BAR ==========
         JMenuBar menuBar = new JMenuBar();
-        JMenu menuAkun = new JMenu(Session.getAdmin().getUsername());
+        JMenu menuAkun = new JMenu("Akun");
         JMenuItem menuUbahPassword = new JMenuItem("Ubah Password");
         JMenuItem menuLogout = new JMenuItem("Logout");
 
@@ -67,13 +68,15 @@ public class DashboardView extends JFrame {
         });
 
         menuLogout.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this, "Yakin logout?", "Logout", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, "Yakin ingin logout?", "Logout", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 Session.clear();
+                SessionStorage.hapusSession(); // hapus remember me
                 dispose();
                 new LoginView().setVisible(true);
             }
         });
+
     }
 
     private JPanel createInfoCard(String title, String value) {

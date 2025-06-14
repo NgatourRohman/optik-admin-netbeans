@@ -8,14 +8,22 @@ package tokooptikadmin;
  *
  * @author ngato
  */
-import javax.swing.SwingUtilities;
-import tokooptikadmin.views.LoginView;
+import tokooptikadmin.utils.SessionStorage;
+import tokooptikadmin.utils.Session;
+import tokooptikadmin.models.AdminModel;
+import tokooptikadmin.views.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new LoginView().setVisible(true);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            AdminModel remembered = SessionStorage.loadSession();
+            if (remembered != null) {
+                Session.setAdmin(remembered);
+                new DashboardView().setVisible(true);
+            } else {
+                new LoginView().setVisible(true);
+            }
         });
     }
 }

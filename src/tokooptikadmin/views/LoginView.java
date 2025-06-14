@@ -10,23 +10,25 @@ package tokooptikadmin.views;
  */
 import tokooptikadmin.controllers.AuthController;
 import tokooptikadmin.models.AdminModel;
+import tokooptikadmin.utils.Session;
+import tokooptikadmin.utils.SessionStorage;
 
 import javax.swing.*;
 import java.awt.*;
-import tokooptikadmin.utils.Session;
 
 public class LoginView extends JFrame {
 
     public LoginView() {
         setTitle("Login Admin");
-        setSize(350, 200);
+        setSize(350, 220);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
         JTextField tfUsername = new JTextField();
         JPasswordField pfPassword = new JPasswordField();
+        JCheckBox cbIngatSaya = new JCheckBox("Ingat Saya");
         JButton btnLogin = new JButton("Login");
 
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -34,19 +36,28 @@ public class LoginView extends JFrame {
         panel.add(tfUsername);
         panel.add(new JLabel("Password:"));
         panel.add(pfPassword);
-        panel.add(new JLabel());
+        panel.add(new JLabel()); // kosong
+        panel.add(cbIngatSaya);
+        panel.add(new JLabel()); // kosong
         panel.add(btnLogin);
 
         add(panel, BorderLayout.CENTER);
 
         btnLogin.addActionListener(e -> {
-            String username = tfUsername.getText();
-            String password = new String(pfPassword.getPassword());
+            String username = tfUsername.getText().trim();
+            String password = new String(pfPassword.getPassword()).trim();
 
             AdminModel admin = AuthController.login(username, password);
             if (admin != null) {
                 JOptionPane.showMessageDialog(this, "Login berhasil, selamat datang " + admin.getUsername());
                 Session.setAdmin(admin);
+
+                if (cbIngatSaya.isSelected()) {
+                    SessionStorage.simpanSession(admin);
+                } else {
+                    SessionStorage.hapusSession();
+                }
+
                 dispose();
                 new DashboardView().setVisible(true);
             } else {
