@@ -8,6 +8,8 @@ package tokooptikadmin.views;
  *
  * @author ngato
  */
+import tokooptikadmin.utils.Session;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,7 +20,24 @@ public class DashboardView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
+        if (Session.getAdmin() != null) {
+            setTitle("Dashboard - Login sebagai: " + Session.getAdmin().getUsername());
+        }
+
+        // ========== MENU BAR ==========
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menuAkun = new JMenu(Session.getAdmin().getUsername());
+        JMenuItem menuUbahPassword = new JMenuItem("Ubah Password");
+        JMenuItem menuLogout = new JMenuItem("Logout");
+
+        menuAkun.add(menuUbahPassword);
+        menuAkun.add(menuLogout);
+        menuBar.add(menuAkun);
+        setJMenuBar(menuBar);
+
+        // ========== INFO CARD ==========
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 2, 20, 20));
         panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
@@ -28,6 +47,7 @@ public class DashboardView extends JFrame {
         panel.add(createInfoCard("Penjualan Hari Ini", "Rp 1.250.000"));
         panel.add(createInfoCard("Stok Hampir Habis", "5"));
 
+        // ========== TABS ==========
         JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("Dashboard", panel);
         tabs.addTab("Produk", new ProdukPanel());
@@ -41,6 +61,19 @@ public class DashboardView extends JFrame {
 
         getContentPane().add(tabs);
 
+        // ========== ACTIONS ==========
+        menuUbahPassword.addActionListener(e -> {
+            new UbahPasswordDialog(this).setVisible(true);
+        });
+
+        menuLogout.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "Yakin logout?", "Logout", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Session.clear();
+                dispose();
+                new LoginView().setVisible(true);
+            }
+        });
     }
 
     private JPanel createInfoCard(String title, String value) {

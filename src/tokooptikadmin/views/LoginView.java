@@ -13,6 +13,7 @@ import tokooptikadmin.models.AdminModel;
 
 import javax.swing.*;
 import java.awt.*;
+import tokooptikadmin.utils.Session;
 
 public class LoginView extends JFrame {
 
@@ -45,6 +46,7 @@ public class LoginView extends JFrame {
             AdminModel admin = AuthController.login(username, password);
             if (admin != null) {
                 JOptionPane.showMessageDialog(this, "Login berhasil, selamat datang " + admin.getUsername());
+                Session.setAdmin(admin);
                 dispose();
                 new DashboardView().setVisible(true);
             } else {
