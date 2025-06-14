@@ -39,4 +39,28 @@ public class StatistikController {
 
         return data;
     }
+
+    public static Map<String, Integer> getProdukTerlaris() {
+        Map<String, Integer> data = new LinkedHashMap<>();
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = """
+            SELECT pr.nama_produk, SUM(pd.jumlah) AS total
+            FROM penjualan_detail pd
+            JOIN produk pr ON pd.produk_id = pr.id
+            GROUP BY pr.nama_produk
+            ORDER BY total DESC
+            LIMIT 5
+        """;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                data.put(rs.getString("nama_produk"), rs.getInt("total"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
 }
