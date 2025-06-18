@@ -61,7 +61,8 @@ public class DashboardView extends JFrame {
             "ic_truck.png"
         };
 
-        for (String fileName : iconFiles) {
+        for (int i = 0; i < iconFiles.length; i++) {
+            String fileName = iconFiles[i];
             JButton btn = new JButton();
             btn.setPreferredSize(new Dimension(50, 50));
             btn.setBackground(new Color(145, 168, 138));
@@ -76,9 +77,20 @@ public class DashboardView extends JFrame {
                 System.err.println("Icon not found: " + fileName);
             }
 
+            final int index = i;
+            btn.addActionListener(e -> {
+                if (index == 0) {
+                    // Tombol Dashboard
+                    setMainContent(buildContent());
+                } else if (index == 1) {
+                    // Tombol Produk (📦)
+                    setMainContent(new ProdukPanel());
+                }
+                // Tambahkan panel lainnya sesuai index jika dibutuhkan
+            });
+
             sidebar.add(btn);
         }
-
         return sidebar;
     }
 
@@ -271,5 +283,19 @@ public class DashboardView extends JFrame {
         item.add(colorBox);
         item.add(label);
         return item;
+    }
+
+    private void setMainContent(JPanel panel) {
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.add(buildSidebar(), BorderLayout.WEST);
+        wrapper.add(scrollPane, BorderLayout.CENTER);
+
+        setContentPane(wrapper);
+        revalidate();
+        repaint();
     }
 }

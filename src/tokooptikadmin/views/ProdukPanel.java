@@ -14,164 +14,186 @@ import tokooptikadmin.models.ProdukModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-
 import java.util.List;
 
 public class ProdukPanel extends JPanel {
 
     private JTable table;
     private DefaultTableModel tableModel;
+    private JTextField tfSearch;
 
     public ProdukPanel() {
         setLayout(new BorderLayout());
+        setBackground(new Color(252, 252, 247)); // warna latar sesuai desain
 
-        // INISIALISASI TABEL DENGAN KOLOM + ACTION BUTTON
-        tableModel = new DefaultTableModel();
+        // === Header: Judul Halaman ===
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(new Color(252, 252, 247));
+
+        JLabel title = new JLabel("  Manajemen Inventaris");
+        title.setFont(new Font("SansSerif", Font.BOLD, 18));
+        title.setForeground(new Color(139, 183, 135));
+        title.setIcon(new ImageIcon(getClass().getResource("/assets/ic_box.png")));
+        title.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+        header.add(title, BorderLayout.WEST);
+        add(header, BorderLayout.NORTH);
+
+        // === Panel Filter dan Tombol ===
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setBackground(new Color(252, 252, 247));
+        topBar.setBorder(BorderFactory.createEmptyBorder(0, 15, 10, 15));
+
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        filterPanel.setBackground(new Color(252, 252, 247));
+
+        JButton btnFilter = new JButton(" Filter");
+        btnFilter.setIcon(new ImageIcon(getClass().getResource("/assets/ic_filter.png")));
+        btnFilter.setBackground(new Color(223, 232, 223));
+        btnFilter.setFocusPainted(false);
+
+        tfSearch = new JTextField(20);
+        JButton btnCari = new JButton("Cari");
+        btnCari.setBackground(new Color(250, 240, 230));
+        btnCari.setFocusPainted(false);
+
+        filterPanel.add(btnFilter);
+        filterPanel.add(tfSearch);
+        filterPanel.add(btnCari);
+
+        JPanel rightButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        rightButtons.setBackground(new Color(252, 252, 247));
+        JButton btnCetak = new JButton("Cetak");
+        btnCetak.setBackground(new Color(193, 214, 193));
+        JButton btnTambah = new JButton("+ Tambah");
+        btnTambah.setBackground(new Color(139, 183, 135));
+        btnTambah.setForeground(Color.WHITE);
+        btnTambah.setFocusPainted(false);
+
+        rightButtons.add(btnCetak);
+        rightButtons.add(btnTambah);
+
+        topBar.add(filterPanel, BorderLayout.WEST);
+        topBar.add(rightButtons, BorderLayout.EAST);
+
+        add(topBar, BorderLayout.BEFORE_FIRST_LINE);
+
+        // === Label Data Barang ===
+        JPanel sectionLabel = new JPanel(new BorderLayout());
+        sectionLabel.setBackground(new Color(193, 214, 193));
+        sectionLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+        JLabel label = new JLabel("  Data Barang");
+        label.setIcon(new ImageIcon(getClass().getResource("/assets/ic_table.png")));
+        label.setFont(new Font("SansSerif", Font.BOLD, 14));
+        sectionLabel.add(label, BorderLayout.WEST);
+
+        // === Tabel Produk ===
+        tableModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int col) {
+                return col == 6;
+            }
+        };
+
         tableModel.setColumnIdentifiers(new String[]{
-            "ID", "Kode", "Nama", "Jenis", "Merk", "Harga Beli", "Harga Jual", "Stok", "Edit", "Hapus"
+            "No", "Kode Barang", "Nama Barang", "Kategori", "Harga", "Stok", "Aksi"
         });
 
         table = new JTable(tableModel);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        table.setRowHeight(30);
+        table.setShowGrid(false);
+        table.setIntercellSpacing(new Dimension(0, 0));
+        table.getColumn("Aksi").setCellRenderer(new ButtonRenderer("/assets/ic_detail.png"));
+        table.getColumn("Aksi").setCellEditor(new ButtonEditor(new JCheckBox(), "Rincian", this));
 
-        // ATUR RENDERER & EDITOR TOMBOL
-        table.getColumn("Edit").setCellRenderer(new ButtonRenderer());
-        table.getColumn("Edit").setCellEditor(new ButtonEditor(new JCheckBox(), "Edit", this));
-        table.getColumn("Hapus").setCellRenderer(new ButtonRenderer());
-        table.getColumn("Hapus").setCellEditor(new ButtonEditor(new JCheckBox(), "Hapus", this));
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230)));
 
-        // FORM INPUT PRODUK
-        JPanel formPanel = new JPanel(new GridLayout(3, 5, 10, 10));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Tambah Produk"));
+        JPanel tableWrapper = new JPanel(new BorderLayout());
+        tableWrapper.setBackground(Color.WHITE);
+        tableWrapper.setBorder(BorderFactory.createEmptyBorder(10, 15, 15, 15));
+        tableWrapper.add(sectionLabel, BorderLayout.NORTH);
+        tableWrapper.add(scrollPane, BorderLayout.CENTER);
 
-        JTextField tfKode = new JTextField();
-        JTextField tfNama = new JTextField();
-        JComboBox<String> cbJenis = new JComboBox<>(new String[]{"Frame", "Lensa", "Aksesoris"});
-        JTextField tfMerk = new JTextField();
-        JTextField tfHargaBeli = new JTextField();
-        JTextField tfHargaJual = new JTextField();
-        JTextField tfStok = new JTextField();
+        add(tableWrapper, BorderLayout.CENTER);
 
-        formPanel.add(new JLabel("Kode"));
-        formPanel.add(new JLabel("Nama"));
-        formPanel.add(new JLabel("Jenis"));
-        formPanel.add(new JLabel("Merk"));
-        formPanel.add(new JLabel("Harga Beli"));
+        // === Aksi tombol ===
+        btnTambah.addActionListener(e -> showTambahDialog());
 
-        formPanel.add(tfKode);
-        formPanel.add(tfNama);
-        formPanel.add(cbJenis);
-        formPanel.add(tfMerk);
-        formPanel.add(tfHargaBeli);
-
-        formPanel.add(new JLabel("Harga Jual"));
-        formPanel.add(new JLabel("Stok"));
-        formPanel.add(new JLabel());
-        formPanel.add(new JLabel());
-        formPanel.add(new JLabel());
-
-        formPanel.add(tfHargaJual);
-        formPanel.add(tfStok);
-        formPanel.add(new JLabel());
-        formPanel.add(new JLabel());
-
-        JButton btnTambah = new JButton("Tambah Produk");
-        formPanel.add(btnTambah);
-
-        add(formPanel, BorderLayout.NORTH);
-
-        // AKSI TOMBOL TAMBAH
-        btnTambah.addActionListener(e -> {
-            try {
-                ProdukModel produk = new ProdukModel(
-                        0,
-                        tfKode.getText(),
-                        tfNama.getText(),
-                        cbJenis.getSelectedItem().toString(),
-                        tfMerk.getText(),
-                        Double.parseDouble(tfHargaBeli.getText()),
-                        Double.parseDouble(tfHargaJual.getText()),
-                        Integer.parseInt(tfStok.getText())
-                );
-
-                if (ProdukController.tambahProduk(produk)) {
-                    JOptionPane.showMessageDialog(this, "Produk berhasil ditambahkan.");
-                    tfKode.setText("");
-                    tfNama.setText("");
-                    tfMerk.setText("");
-                    tfHargaBeli.setText("");
-                    tfHargaJual.setText("");
-                    tfStok.setText("");
-                    loadData();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Gagal menambahkan produk.", "Error", JOptionPane.ERROR_MESSAGE);
+        btnCari.addActionListener(e -> {
+            String keyword = tfSearch.getText().trim().toLowerCase();
+            tableModel.setRowCount(0);
+            int no = 1;
+            for (ProdukModel p : ProdukController.getAllProduk()) {
+                if (p.getKodeProduk().toLowerCase().contains(keyword)
+                        || p.getNamaProduk().toLowerCase().contains(keyword)) {
+                    tableModel.addRow(new Object[]{
+                        no++, p.getKodeProduk(), p.getNamaProduk(), p.getJenis(),
+                        p.getHargaJual(), p.getStok(), "Rincian"
+                    });
                 }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Input tidak valid.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // MUAT DATA PRODUK AWAL
+        // Load data awal
         loadData();
     }
 
     public void loadData() {
         tableModel.setRowCount(0);
-        List<ProdukModel> produkList = ProdukController.getAllProduk();
-        for (ProdukModel p : produkList) {
+        List<ProdukModel> list = ProdukController.getAllProduk();
+        int no = 1;
+        for (ProdukModel p : list) {
             tableModel.addRow(new Object[]{
-                p.getId(), p.getKodeProduk(), p.getNamaProduk(), p.getJenis(),
-                p.getMerk(), p.getHargaBeli(), p.getHargaJual(), p.getStok(), "Edit", "Hapus"
+                no++, p.getKodeProduk(), p.getNamaProduk(), p.getJenis(),
+                p.getHargaJual(), p.getStok(), "Rincian"
             });
         }
     }
 
-    public void showEditDialog(ProdukModel produk) {
-        JTextField tfKode = new JTextField(produk.getKodeProduk());
-        JTextField tfNama = new JTextField(produk.getNamaProduk());
-        JComboBox<String> cbJenis = new JComboBox<>(new String[]{"Frame", "Lensa", "Aksesoris"});
-        cbJenis.setSelectedItem(produk.getJenis());
-        JTextField tfMerk = new JTextField(produk.getMerk());
-        JTextField tfHargaBeli = new JTextField(String.valueOf(produk.getHargaBeli()));
-        JTextField tfHargaJual = new JTextField(String.valueOf(produk.getHargaJual()));
-        JTextField tfStok = new JTextField(String.valueOf(produk.getStok()));
+    public void showTambahDialog() {
+        JTextField tfKode = new JTextField();
+        JTextField tfNama = new JTextField();
+        JComboBox<String> cbJenis = new JComboBox<>(new String[]{"frame", "lensa"});
+        JTextField tfHarga = new JTextField();
+        JTextField tfStok = new JTextField();
 
-        JPanel panel = new JPanel(new GridLayout(0, 2));
-        panel.add(new JLabel("Kode"));
-        panel.add(tfKode);
-        panel.add(new JLabel("Nama"));
-        panel.add(tfNama);
-        panel.add(new JLabel("Jenis"));
-        panel.add(cbJenis);
-        panel.add(new JLabel("Merk"));
-        panel.add(tfMerk);
-        panel.add(new JLabel("Harga Beli"));
-        panel.add(tfHargaBeli);
-        panel.add(new JLabel("Harga Jual"));
-        panel.add(tfHargaJual);
-        panel.add(new JLabel("Stok"));
-        panel.add(tfStok);
+        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
+        form.add(new JLabel("Kode Barang"));
+        form.add(tfKode);
+        form.add(new JLabel("Nama Barang"));
+        form.add(tfNama);
+        form.add(new JLabel("Kategori"));
+        form.add(cbJenis);
+        form.add(new JLabel("Harga"));
+        form.add(tfHarga);
+        form.add(new JLabel("Stok"));
+        form.add(tfStok);
 
-        int result = JOptionPane.showConfirmDialog(this, panel, "Edit Produk", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (result == JOptionPane.OK_OPTION) {
-            ProdukModel updated = new ProdukModel(
-                    produk.getId(),
-                    tfKode.getText(),
-                    tfNama.getText(),
-                    cbJenis.getSelectedItem().toString(),
-                    tfMerk.getText(),
-                    Double.parseDouble(tfHargaBeli.getText()),
-                    Double.parseDouble(tfHargaJual.getText()),
-                    Integer.parseInt(tfStok.getText())
-            );
-
-            if (ProdukController.updateProduk(updated)) {
-                JOptionPane.showMessageDialog(this, "Produk berhasil diupdate.");
-                loadData();
-            } else {
-                JOptionPane.showMessageDialog(this, "Gagal update produk.");
+        int res = JOptionPane.showConfirmDialog(this, form, "Tambah Barang", JOptionPane.OK_CANCEL_OPTION);
+        if (res == JOptionPane.OK_OPTION) {
+            try {
+                ProdukModel produk = new ProdukModel(0, tfKode.getText(), tfNama.getText(),
+                        cbJenis.getSelectedItem().toString(), "", 0, Double.parseDouble(tfHarga.getText()), Integer.parseInt(tfStok.getText()));
+                if (ProdukController.tambahProduk(produk)) {
+                    JOptionPane.showMessageDialog(this, "Produk berhasil ditambahkan.");
+                    loadData();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Gagal menambahkan produk.");
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Input tidak valid.");
             }
         }
+    }
+
+    public void showDetailDialog(ProdukModel p) {
+        JOptionPane.showMessageDialog(this,
+                "Kode: " + p.getKodeProduk()
+                + "\nNama: " + p.getNamaProduk()
+                + "\nKategori: " + p.getJenis()
+                + "\nHarga: " + p.getHargaJual()
+                + "\nStok: " + p.getStok(),
+                "Rincian Produk", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public JTable getTable() {

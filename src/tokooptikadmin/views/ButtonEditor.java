@@ -8,63 +8,75 @@ package tokooptikadmin.views;
  *
  * @author ngato
  */
-import tokooptikadmin.controllers.ProdukController;
-import tokooptikadmin.models.ProdukModel;
-
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
-import java.awt.event.*;
-
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import tokooptikadmin.models.ProdukModel;
 
 public class ButtonEditor extends DefaultCellEditor {
 
     protected JButton button;
     private String label;
-    private boolean isPushed;
-    private ProdukPanel parent;
+    private boolean clicked;
+    private ProdukPanel produkPanel;
     private int selectedRow;
 
-    public ButtonEditor(JCheckBox checkBox, String label, ProdukPanel parent) {
+    public ButtonEditor(JCheckBox checkBox, String label, ProdukPanel produkPanel) {
         super(checkBox);
-        this.label = label;
-        this.parent = parent;
-        button = new JButton(label);
+        this.produkPanel = produkPanel;
+        button = new JButton();
         button.setOpaque(true);
-        button.addActionListener(e -> fireEditingStopped());
+        button.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        button.setBackground(new Color(193, 214, 193));
+        button.setFocusPainted(false);
+        button.setForeground(Color.BLACK);
+        button.setIcon(new ImageIcon(getClass().getResource("/assets/ic_detail.png")));
+
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fireEditingStopped(); // supaya editor tidak stuck
+                ProdukModel selected = getProdukFromTable();
+                if (selected != null) {
+                    produkPanel.showDetailDialog(selected);
+                }
+            }
+        });
     }
 
-    public Component getTableCellEditorComponent(JTable table, Object value,
-            boolean isSelected, int row, int column) {
-        selectedRow = row;
-        isPushed = true;
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object obj,
+            boolean isSelected, int row, int col) {
+        this.label = obj != null ? obj.toString() : "Rincian";
         button.setText(label);
+        this.selectedRow = row;
+        this.clicked = true;
         return button;
     }
 
+    @Override
     public Object getCellEditorValue() {
-        if (isPushed) {
-            int modelRow = parent.getTable().convertRowIndexToModel(selectedRow);
-            int id = Integer.parseInt(parent.getTable().getModel().getValueAt(modelRow, 0).toString());
-
-            if (label.equals("Edit")) {
-                ProdukModel produk = ProdukController.getProdukById(id);
-                parent.showEditDialog(produk);
-            } else if (label.equals("Hapus")) {
-                int confirm = JOptionPane.showConfirmDialog(parent, "Yakin hapus produk ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    if (ProdukController.hapusProduk(id)) {
-                        JOptionPane.showMessageDialog(parent, "Produk berhasil dihapus.");
-                        parent.loadData();
-                    } else {
-                        JOptionPane.showMessageDialog(parent, "Gagal menghapus produk.");
-                    }
-                }
-            }
-        }
-        isPushed = false;
         return label;
     }
 
+    private ProdukModel getProdukFromTable() {
+        JTable table = produkPanel.getTable();
+        int modelRow = table.convertRowIndexToModel(selectedRow);
+
+        try {
+            return new ProdukModel(
+                    0,
+                    table.getValueAt(modelRow, 1).toString(),
+                    table.getValueAt(modelRow, 2).toString(),
+                    table.getValueAt(modelRow, 3).toString(),
+                    "", 0,
+                    Double.parseDouble(table.getValueAt(modelRow, 4).toString()),
+                    Integer.parseInt(table.getValueAt(modelRow, 5).toString())
+            );
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
