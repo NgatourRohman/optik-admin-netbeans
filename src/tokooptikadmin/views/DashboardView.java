@@ -85,6 +85,9 @@ public class DashboardView extends JFrame {
                 } else if (index == 1) {
                     // Tombol Produk (📦)
                     setMainContent(new ProdukPanel());
+                } else if (index == 2) {
+                    // Tombol Produk (📦)
+                    setMainContent(new LaporanPenjualanPanel());
                 }
                 // Tambahkan panel lainnya sesuai index jika dibutuhkan
             });
